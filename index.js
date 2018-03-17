@@ -15,19 +15,20 @@ process.env.UV_THREADPOOL_SIZE = 128;
   // Local dependencies
   const ConfigEditor = require('./src/config-editor');
 
-  let configuration,
-    activeConfig,
-    argv,
-    isNewConfigOrHelp = process.argv[2] === 'create' || process.argv[2] === undefined || process.argv[2] === '-h' || process.argv[2] === '--help';
+  let argv, activeConfig;
+  let args = process.argv;
+  let commandParam = args[2];
+  let configlessCommands = [undefined, 'create', '-h', '--help', 'split', 'merge'];
 
-  if (!isNewConfigOrHelp && !ConfigManager.isConfigExisting()) {
+  let isConfiglessCommand = configlessCommands.indexOf(commandParam) > -1;
+  Log.info(isConfiglessCommand);
+  if (!isConfiglessCommand && !ConfigManager.isConfigExisting()) {
     Log.error(chalk.red(`\nCannot find configuration in [${process.cwd()}].`));
     return;
   }
 
-  var configPath = path.join(process.cwd(), ConfigManager.getConfigName());
-
-  if (!isNewConfigOrHelp) {
+  //var configPath = path.join(process.cwd(), ConfigManager.getConfigName());
+  if (!isConfiglessCommand) {
     activeConfig = ConfigManager.loadConfiguration().getActiveProfile();
   }
 
@@ -58,8 +59,7 @@ process.env.UV_THREADPOOL_SIZE = 128;
     .example('davos upload:sites <optional>--meta [path to meta]</optional>', 'import sites meta')
     .example("davos upload:meta <optional>--pattern *.xml</optional>", "Upload and import all meta files matching the pattern. Default pattern is *")
     .example('davos watch <optional>--cartridge [path to cartridge]</optional>', 'watch all cartridges from your configuration for changes or a specific single cartridge from your local cartridges')
-    .example("davos split:meta [path/to/bundle.xml] <optional>--out dir/for/chunks</optional>", "split a meta bundle into chunks by attribute group. Path must be relative starting from site_template directory.")
-    .example("davos split:lib [path/to/bundle.xml] <optional>--out dir/for/chunks</optional>", "split a library bundle into chunks by content. Path must be relative starting from site_template directory.")
+    .example("davos split [path/to/bundle.xml] <optional>--out dir/for/chunks</optional>", "split a meta/library bundle into chunks by attribute group or content assets. Path must be relative starting from site_template directory.")
     .example("davos merge [pattern] <optional>--out bundle.xml</optional>", "merge all files matching the pattern into a bundle.xml in your CWD")
     .config(activeConfig)
     .options({
@@ -105,14 +105,12 @@ process.env.UV_THREADPOOL_SIZE = 128;
     case 'watch':
       new Davos.Core(argv, ConfigManager).watch();
       break;
-    case "split:meta":
-      new Davos.Core(argv, ConfigManager).splitMetaBundle();
-      break;
-    case "split:lib":
-      new Davos.Core(argv, ConfigManager).splitLibraryBundle();
+    case "split":
+      Log.info(argv);
+      new Davos.Core(argv, false).split();
       break;
     case "merge":
-      new Davos.Core(argv, ConfigManager).merge();
+      new Davos.Core(argv, false).merge();
       break;
     case 'sync':
       new Davos.Core(argv, ConfigManager).sync();
