@@ -13,6 +13,9 @@
   "bin": {
     "davos": "index.js"
   },
+  "engines": {
+    "node": ">=8.5.0"
+  },
   "keywords": [
     "demandware",
     "webdav",
@@ -44,6 +47,7 @@
     "prompt": "^1.0.0",
     "request-debug": "^0.2.0",
     "underscore": "^1.8.3",
+    "yargonaut": "^1.1.2",
     "yargs": "^11.0.0"
   },
   "devDependencies": {
