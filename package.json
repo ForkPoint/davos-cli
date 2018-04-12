@@ -42,7 +42,6 @@
     "url": "git+https://github.com/forkpoint/davos-cli.git"
   },
   "dependencies": {
-    "davos": "*",
     "progress": "^2.0.0",
     "prompt": "^1.0.0",
     "request-debug": "^0.2.0",
