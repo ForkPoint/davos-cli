@@ -3,7 +3,7 @@ const yargs = require('yargs'),
 Davos = require('davos'),
 ConfigEditor = require('../config-editor');
 exports.command = 'setup'
-exports.aliases = ['create']
+exports.aliases = ['create', 'init']
 exports.desc = ''
 exports.builder = {}
 exports.handler = (argv) => {
